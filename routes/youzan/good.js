@@ -2,6 +2,24 @@ var express = require('express');
 var router = express.Router();
 var goodModel = require('../../db/goodModel')
 
+router.post('/login', function(req, res, next) {
+  let { username, password } = req.body
+  res.json({
+    err: 0,
+    msg: '登录成功',
+    data: {
+      role: 1,
+      username: username,
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+      navs: [
+        {path: '/shop', text:'店铺管理', icon:'fa-camera-retro'},
+        {path: '/good', text:'商品管理', icon:'fa-home'},
+        {path: '/order', text:'订单管理', icon:'fa-book'}
+      ]
+    }
+  })
+})
+
 router.post('/createGood', function(req, res, next) {
   let { src, name, price, visit_num, browse_num, inventory_num, sale_num, order, status_no, group_no, type_no, deduction_no } = req.body
   var good = {
@@ -55,9 +73,9 @@ router.get('/getGoodList', function(req, res, next) {
     sale_num: { $gte: sale_min, $lte: sale_max }
   }
   if (!params.name) delete params.name
-  if (group_no < 0) delete params.group_no
-  if (type_no < 0) delete params.type_no
-  if (deduction_no < 0) delete params.deduction_no
+  if (group_no <= 0) delete params.group_no
+  if (type_no <= 0) delete params.type_no
+  if (deduction_no <= 0) delete params.deduction_no
   if (status_no <= 0) delete params.status_no
 
   goodModel.find(params).count().then((total)=>{

@@ -53,7 +53,7 @@ router.get('/getAllUsers', function(req, res) {
   // res.header("Content-Type", "application/json;charset=utf-8");
 
   userModel.find().then(arr=>{
-    res.json({err:0, msg:'success', data: arr})
+    res.jsonp({err:0, msg:'success', data: arr})
   }).catch(err=>{
     res.json({err:1, msg:'fail'})
   })
