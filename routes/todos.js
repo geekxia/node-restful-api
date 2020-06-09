@@ -24,7 +24,7 @@ router.get('/getMyTodos', function(req, res, next) {
 router.post('/addTodo', function(req, res, next) {
   let { userId, task } = req.body
   // 校验学号的格式
-  var reg = /^(sz|SZ)\d{9}/
+  var reg = /^[a-zA-Z]{2}\d{9}/
   if (!reg.test(userId)) {
     res.json({err:1, msg:'你的学号格式不对！'})
     return
