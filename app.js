@@ -42,6 +42,7 @@ app.use('/article', articleRouter)
 app.use('/upload', uploadRouter)
 app.use('/todo', todoRouter)
 app.use('/youzan', youzanGoodRouter)
+app.use('/jd', require('./routes/jd'))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
