@@ -15,3 +15,23 @@ let cates = [
   { rank: 14, cate: 'music', cate_zh: '玩具乐器'},
   { rank: 15, cate: 'pet', cate_zh: '宠物'}
 ]
+
+
+let good = {
+  // 商品图片
+  img: '//img10.360buyimg.com/mobilecms/s372x372_jfs/t1/105192/21/9509/231834/5e0f25deE9f142ae7/1ee92a68564656f8.jpg!q70.dpg.webp',
+  // 商品名称
+  name: '连衣裙',
+  // 商品描述
+  desc: '2020夏天爆款校园女装连衣裙',
+  // 价格
+  price: 199,
+  // 品类
+  cate: 'clothe',
+  // 是否推荐
+  hot: true,
+  // 排名，先后顺序
+  // rank: Number,
+  // 入库时间
+  // create_time: Number
+}

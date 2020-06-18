@@ -15,3 +15,9 @@
 * POST /upload/img  图片上传
 
 * POST /article/create 创建与编辑
+
+
+#### 一、JD接口文档
+
+登录：/user/login
+注册：/user/regist
