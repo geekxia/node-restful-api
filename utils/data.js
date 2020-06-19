@@ -13,7 +13,7 @@ let cates = [
   { rank: 12, cate: 'drink', cate_zh: '饮料酒水'},
   { rank: 13, cate: 'gem', cate_zh: '钟表珠宝'},
   { rank: 14, cate: 'music', cate_zh: '玩具乐器'},
-  { rank: 15, cate: 'pet', cate_zh: '宠物'}
+  { rank: 15, cate: 'pet', cate_zh: '宠物生活'}
 ]
 
 

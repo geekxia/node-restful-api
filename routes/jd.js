@@ -6,18 +6,13 @@ var cateModel = require('../db/jd/cateModel')
 var cartModel = require('../db/jd/cartModel')
 var orderModel = require('../db/jd/orderModel')
 
+
+/*
+* 商品管理 =============================================================
+*/
+
 // 添加商品（不作token验证）
 router.post('/addGood', function(req, res, next) {
-
-  // img: String,   // 图片
-  // name: String,  // 商品名称
-  // desc: String,  // 商品描述
-  // price: Number, // 价格
-  // cate: String,  // 品类
-  // hot: Boolean,  // 是否推荐
-  // rank: Number   // 排名，先后顺序
-  // create_time: Number
-
   let { img, name, desc, price, cate, hot, rank } = req.body
 
   if(!img) return res.json({err:-1, msg:'img是必填参数'})
@@ -38,71 +33,71 @@ router.post('/addGood', function(req, res, next) {
 })
 
 
-/* 获取推荐商品 */
+/* 获取推荐商品（不作token验证） */
 router.get('/getHotGoodList', function(req, res, next) {
   let { hot, page, size } = req.query
 
-  hot = hot || false
-  page = page || 1
-  size = size || 10
+  hot = hot || false;
+  page = parseInt(page||1)
+  size = parseInt(size||10)
 
-  jwt.verifyToken(req).then(()=>{
-    goodModel.find({hot}).limit(size).skip((page-1)*size).sort({rank: -1}).then(arr=>{
-      res.json({err:0,msg:'success',data:arr})
-    })
+  goodModel.find({hot}).limit(size).skip((page-1)*size).sort({rank: -1}).then(arr=>{
+    res.json({err:0,msg:'success', data:arr})
+  }).catch(err=>{
+    res.json({err:1,msg:'fail',err})
+  }) 
+})
+
+// 获取商品详情
+router.get('/getGoodDetail', function(req, res, next) {
+  let { good_id } = req.query
+  if(!good_id) return res.json({err:1,msg:'商品id就必填参数'})
+  goodModel.find({_id:good_id}).then(arr=>{
+    res.json({err:0, msg:'success', data: arr[0]})
+  })
+})
+
+// 获取全部品类
+router.get('/getAllCates', function(req, res, next) {
+  // 1 由小到大
+  cateModel.find({}).sort({rank: 1}).then(arr=>{
+    res.json({err:0,msg:'success',data:arr})
   }).catch(err=>{
     res.json({err:1,msg:'fail',err})
   })
-});
+})
 
-// 品类筛选（基于品类进行筛选）
+// 基于品类筛选（不验证token）
 router.get('/getCateGoodList', function(req, res, next) {
   let { cate, page, size } = req.query
 
   cate = cate || ''
-  page = page || 1
-  size = size || 1000
+  page = parseInt(page||1)
+  size = parseInt(size||1000)
 
   let params = {cate}
   if (!cate) delete params.cate
 
-  jwt.verifyToken(req).then(()=>{
-    goodModel.find(params).limit(size).skip((page-1)*size).sort({rank: -1}).then(arr=>{
-      res.json({err:0,msg:'success',data:arr})
-    })
+  goodModel.find(params).limit(size).skip((page-1)*size).sort({rank: -1}).then(arr=>{
+    res.json({err:0,msg:'success',data:arr})
   }).catch(err=>{
     res.json({err:1,msg:'fail',err})
   })
 })
 
 
-// 获取全部品类
-router.get('/getAllCates', function(req, res, next) {
-
-  let params = {}
-
-  jwt.verifyToken(req).then(()=>{
-    // 1 由小到大
-    cateModel.find(params).sort({rank: 1}).then(arr=>{
-      res.json({err:0,msg:'success',data:arr})
-    })
-  }).catch(err=>{
-    res.json({err:1,msg:'fail',err})
-  })
-})
-
+/*
+* 购物管理 =============================================================
+*/
 
 // 加入购物车
 router.post('/addToCart', function(req, res, next) {
   let { num, good_id } = req.body
 
   num = num || 1
-  if (!good_id) return res.json({err: -1, msg: 'good_id是必填参数'})
+  if (!good_id) return res.json({err: -1, msg: 'good_id商品id是必填参数'})
 
-  // 入参还要判断，如果在 jdcarts 中已经存在了当前 good_id，直接num++即可，无须重复添加
-
-  jwt.verifyToken(req).then(arr=>{
-
+  jwt.verifyToken(req, res).then(arr=>{
     let item = {
       user_id: arr[0]._id,  // 用户id
       good_id,   // 商品id
@@ -111,40 +106,25 @@ router.post('/addToCart', function(req, res, next) {
       status: 1
     }
 
-    cartModel.insertMany([item]).then(()=>{
-      res.json({err:0,msg:'success', msg_zh:'加入购物车成功'})
-    })
-  }).catch(err=>{
-    res.json({err:1,msg:'fail',err})
-  })
-})
-
-// 改变购物车商品数量
-router.post('/updateCartNum', function(req, res, next) {
-  let { num, id } = req.body
-
-  if (!num) return res.json({err:-1, msg:'num是必填参数'})
-  if (num < 1) return res.json({err:-1, msg:'num不能小于1'})
-  if (!id) return res.json({err:-1, msg:'id是必填参数'})
-
-  jwt.verifyToken(req).then(()=>{
-    cartModel.updateOne({_id: id}, {num}).then(()=>{
-      res.json({err:0,msg:'成功'})
-    })
-  }).catch(err=>{
-    res.json({err:1,msg:'fail',err})
-  })
-})
-
-// 删除购物车商品
-router.get('/deleteToCart', function(req, res, next) {
-  let { id } = req.query
-
-  if (!id) return res.json({err: -1, msg:'id是必填参数'})
-
-  jwt.verifyToken(req).then(()=>{
-    cartModel.deleteMany({_id: id}).then(()=>{
-      res.json({err:0,msg:'删除成功'})
+    // 入参还要判断，如果在 jdcarts 中已经存在了当前 good_id，直接num++即可，无须重复添加
+    cartModel.find({good_id}).then(arr=>{
+      if (arr.length == 0) {
+        cartModel.insertMany([item]).then(()=>{
+          res.json({err:0,msg:'加入购物车成功'})
+        })
+      } else {
+        let up = {}
+        if (arr[0].status == 1) {
+          up.num = arr[0].num+1
+        } else {
+          up.num = num
+          up.status = 1 
+        }
+        cartModel.updateOne({good_id}, up).then(()=>{
+          res.json({err:0,msg:'加入购物车成功'})
+        })
+        
+      }
     })
   }).catch(err=>{
     res.json({err:1,msg:'fail',err})
@@ -155,10 +135,10 @@ router.get('/deleteToCart', function(req, res, next) {
 router.get('/getCartList', function(req, res, next) {
   let { page, size } = req.query
 
-  page = page || 1
-  size = size || 1000
+  page = parseInt(page||1)
+  size = parseInt(size||1000)
 
-  jwt.verifyToken(req).then((userArr)=>{
+  jwt.verifyToken(req, res).then((userArr)=>{
     // -1 按时间从大到小
     cartModel.find({status:1, user_id: userArr[0]._id}).limit(size).skip((page-1)*size).sort({create_time: -1}).then(arr1=>{
       if(arr1.length==0) return res.json({err:0, msg:'success', data: []})
@@ -186,6 +166,38 @@ router.get('/getCartList', function(req, res, next) {
   })
 })
 
+// 改变购物车商品数量
+router.post('/updateCartNum', function(req, res, next) {
+  let { num, id } = req.body
+
+  if (!num) return res.json({err:-1, msg:'num是必填参数'})
+  if (num < 1) return res.json({err:-1, msg:'num不能小于1'})
+  if (!id) return res.json({err:-1, msg:'id是必填参数'})
+
+  jwt.verifyToken(req, res).then(()=>{
+    cartModel.updateOne({_id: id}, {num}).then(()=>{
+      res.json({err:0,msg:'成功'})
+    })
+  }).catch(err=>{
+    res.json({err:1,msg:'fail',err})
+  })
+})
+
+// 删除购物车商品
+router.get('/deleteToCart', function(req, res, next) {
+  let { id } = req.query
+
+  if (!id) return res.json({err: -1, msg:'id是必填参数'})
+
+  jwt.verifyToken(req, res).then(()=>{
+    cartModel.deleteMany({_id: id}).then(()=>{
+      res.json({err:0,msg:'删除成功'})
+    })
+  }).catch(err=>{
+    res.json({err:1,msg:'fail',err})
+  })
+})
+
 // 提交购物车
 router.post('/submitToCart', function(req, res, next) {
   let { goods } = req.body
@@ -194,8 +206,11 @@ router.post('/submitToCart', function(req, res, next) {
   if (!goods) return res.json({err: -1, msg: 'goods是必填参数'})
 
   let goodIdArr = goods.split(';')
+  goodIdArr.map((ele,idx)=>{
+    if (!ele) goodIdArr.splice(idx,1)
+  })
 
-  jwt.verifyToken(req).then(()=>{
+  jwt.verifyToken(req, res).then(()=>{
     let count = 0
     goodIdArr.map(ele=>{
       console.log('ele', ele)

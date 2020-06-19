@@ -8,7 +8,6 @@ var logger = require('morgan');
 require('./db/connect')
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var articleRouter = require('./routes/article')
 var uploadRouter = require('./routes/upload')
 var todoRouter = require('./routes/todos')
@@ -37,7 +36,7 @@ app.all('*', function(req, res, next) {
 });
 
 app.use('/', indexRouter);
-app.use('/user', usersRouter);
+app.use('/user', require('./routes/users'))
 app.use('/article', articleRouter)
 app.use('/upload', uploadRouter)
 app.use('/todo', todoRouter)

@@ -13,15 +13,17 @@ function generateToken(data) {
 }
 
 // 解密并验证token
-function verifyToken(req) {
+function verifyToken(req, res) {
   // 解密token
   // 注意大小写 authorization
   let token = req.headers.authorization
   // console.log('token', token)
-  var info = jwt.verify(token, 'geekxia').data
-  // 查询数据库是否有当前用户
-  // 返回promise
-  return userModel.find(info)
+  try {
+    let info = jwt.verify(token, 'geekxia').data
+    return userModel.find(info)
+  } catch(err) {
+    return res.status(400).json({err:2,msg:'token无效，请重新登录'})
+  }
 }
 
 module.exports = { generateToken, verifyToken }
