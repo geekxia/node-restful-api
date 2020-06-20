@@ -107,20 +107,13 @@ router.post('/addToCart', function(req, res, next) {
     }
 
     // 入参还要判断，如果在 jdcarts 中已经存在了当前 good_id，直接num++即可，无须重复添加
-    cartModel.find({good_id}).then(arr=>{
-      if (arr.length == 0) {
+    cartModel.find({good_id, user_id: item.user_id}).then(arr1=>{
+      if (arr1.length == 0) {
         cartModel.insertMany([item]).then(()=>{
           res.json({err:0,msg:'加入购物车成功'})
         })
       } else {
-        let up = {}
-        if (arr[0].status == 1) {
-          up.num = arr[0].num+1
-        } else {
-          up.num = num
-          up.status = 1 
-        }
-        cartModel.updateOne({good_id}, up).then(()=>{
+        cartModel.updateOne({good_id, user_id: item.user_id}, {num: arr1[0].num+1}).then(()=>{
           res.json({err:0,msg:'加入购物车成功'})
         })
         
@@ -214,14 +207,23 @@ router.post('/submitToCart', function(req, res, next) {
     let count = 0
     goodIdArr.map(ele=>{
       console.log('ele', ele)
-      cartModel.updateOne({_id: ele }, { status: 0 }).then(()=>{
+
+      cartModel.deleteMany({_id: ele}).then(()=>{
         count++
-        console.log('count', count)
         if (count == goodIdArr.length) {
           res.json({err:0, msg:'下单成功'})
           // 向'订单'集合中插入一条订单记录
         }
       })
+
+      // cartModel.updateOne({_id: ele }, { status: 0 }).then(()=>{
+      //   count++
+      //   console.log('count', count)
+      //   if (count == goodIdArr.length) {
+      //     res.json({err:0, msg:'下单成功'})
+      //     // 向'订单'集合中插入一条订单记录
+      //   }
+      // })
     })
   }).catch(err=>{
     console.log('token失败')
