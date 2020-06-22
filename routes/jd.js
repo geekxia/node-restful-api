@@ -13,7 +13,7 @@ var orderModel = require('../db/jd/orderModel')
 
 // 添加商品（不作token验证）
 router.post('/addGood', function(req, res, next) {
-  let { img, name, desc, price, cate, hot, rank } = req.body
+  let { img, name, desc, price, cate, hot, rank, id } = req.body
 
   if(!img) return res.json({err:-1, msg:'img是必填参数'})
   if(!name) return res.json({err:-1, msg:'name是必填参数'})
@@ -25,23 +25,40 @@ router.post('/addGood', function(req, res, next) {
   rank = rank || Math.floor(Math.random()*10000)
   let create_time = Date.now()
 
-  goodModel.insertMany([{ img, name, desc, price, cate, hot, rank, create_time }]).then(()=>{
-    res.json({err: 0, msg:'商品添加成功'})
-  }).catch(err=>{
-    res.json({err:-1, msg:'商品添加失败'})
-  })
+  if (id) {
+    goodModel.updateOne({_id: id}, {img, name, desc, price, cate, hot, rank, create_time}).then(()=>{
+      res.json({err:0, msg:'修改成功'})
+    }).catch(err=>res.json({err:-1,msg:'修改失败'}))
+  } else {
+    goodModel.insertMany([{ img, name, desc, price, cate, hot, rank, create_time }]).then(()=>{
+      res.json({err: 0, msg:'添加成功'})
+    }).catch(err=>res.json({err:-1, msg:'添加失败'}))
+  }
+})
+
+// 删除一个商品
+router.get('/delGood', function(req, res, next) {
+  let { id } = req.query
+  if(!id) return res.json({err:-1,msg:'fail',data:'商品id是必须参考'})
+  goodModel.deleteOne({_id:id}).then(()=>{
+    res.json({err:0,msg:'删除成功'})
+  }).catch(err=>res.json({err:-1,msg:'删除失败'}))
 })
 
 
 /* 获取推荐商品（不作token验证） */
 router.get('/getHotGoodList', function(req, res, next) {
-  let { hot, page, size } = req.query
+  let { hot, page, size, cate } = req.query
 
   hot = hot || false;
   page = parseInt(page||1)
   size = parseInt(size||10)
+  cate = cate || ''
 
-  goodModel.find({hot}).limit(size).skip((page-1)*size).sort({rank: -1}).then(arr=>{
+  let params = {cate, hot}
+  if (!cate) delete params.cate
+
+  goodModel.find(params).limit(size).skip((page-1)*size).sort({rank: -1}).then(arr=>{
     res.json({err:0,msg:'success', data:arr})
   }).catch(err=>{
     res.json({err:1,msg:'fail',err})

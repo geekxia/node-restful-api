@@ -37,17 +37,27 @@
         price: Number, // 价格
         cate: String,  // 品类
         hot: Boolean,  // 是否推荐
+        id: String     // 非必填（当id存在时为修改，否则为添加）
 
-获取首页推荐商品：/jd/getHotGoodList
+
+删除商品：/jd/delGood
+    方法：GET
+    入参：
+        id: String     // 商品id
+
+
+获取商品列表：/jd/getHotGoodList
     方法：GET
     入参：
         hot: Boolean  必填, 传true时返回热销推荐的产品，如果不传或false就返回所有商品
         page: Number  必填，用于实现分页功能
         size: Number  非必填
 
+
 获取全部品类：/jd/getAllCates
     方法：GET
     入参：无
+
 
 基于品类进行筛选：/jd/getCateGoodList
     方法：GET
