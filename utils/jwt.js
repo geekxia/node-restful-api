@@ -13,20 +13,6 @@ function generateToken(data) {
 }
 
 // 解密并验证token
-// function verifyToken(req, res) {
-//   // 解密token
-//   // 注意大小写 authorization
-//   let token = req.headers.authorization
-//   try {
-//     let decoded = jwt.verify(token, 'geekxia')
-//     // console.log('decoded', decoded)
-//     return userModel.find(decoded.data)
-//   } catch(err) {
-//     return res.status(400).json({err:2,msg:'token无效，请重新登录'})
-//   }
-// }
-
-// 解密并验证token
 function verifyToken(req) {
   let token = req.headers.authorization
   return new Promise(function(resolve, reject) {
