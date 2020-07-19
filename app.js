@@ -37,7 +37,7 @@ app.all('*', function(req, res, next) {
 
 app.use('/', indexRouter);
 app.use('/user', require('./routes/users'))
-app.use('/article', articleRouter)
+app.use('/v1/article', articleRouter)
 app.use('/upload', uploadRouter)
 app.use('/todo', todoRouter)
 app.use('/youzan', youzanGoodRouter)

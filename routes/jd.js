@@ -12,7 +12,7 @@ const userModel = require('../db/userModel');
 * 商品管理 =============================================================
 */
 
-// 添加商品
+// 商品添加与编辑
 router.post('/addGood', function(req, res, next) {
   let { img, name, desc, price, cate, hot, rank, id } = req.body
 
@@ -115,7 +115,7 @@ router.post('/addToCart', function(req, res, next) {
   num = num || 1
   if (!good_id) return res.json({err: -1, msg: 'good_id商品id是必填参数'})
 
-  jwt.verifyToken(req).then(user=>{
+  jwt.verifyToken(req, res).then(user=>{
     userModel.find(user).then(arr=>{
       let item = {
         user_id: arr[0]._id,  // 用户id
@@ -139,8 +139,6 @@ router.post('/addToCart', function(req, res, next) {
         }
       })
     })
-  }).catch(err=>{
-    res.json({err:1,msg:'fail',err})
   })
 })
 
@@ -151,7 +149,7 @@ router.get('/getCartList', function(req, res, next) {
   page = parseInt(page||1)
   size = parseInt(size||1000)
 
-  jwt.verifyToken(req).then(user=>{
+  jwt.verifyToken(req, res).then(user=>{
     userModel.find(user).then((userArr)=>{
       // -1 按时间从大到小
       cartModel.find({status:1, user_id: userArr[0]._id}).limit(size).skip((page-1)*size).sort({create_time: -1}).then(arr1=>{
@@ -176,8 +174,6 @@ router.get('/getCartList', function(req, res, next) {
         })
       })
     })
-  }).catch(err=>{
-    res.json({err:1,msg:'fail',err})
   })
 })
 
@@ -189,12 +185,10 @@ router.post('/updateCartNum', function(req, res, next) {
   if (num < 1) return res.json({err:-1, msg:'num不能小于1'})
   if (!id) return res.json({err:-1, msg:'id是必填参数'})
 
-  jwt.verifyToken(req).then(user=>{
+  jwt.verifyToken(req, res).then(user=>{
     cartModel.updateOne({_id: id}, {num}).then(()=>{
       res.json({err:0,msg:'成功'})
     })
-  }).catch(err=>{
-    res.json({err:1,msg:'fail',err})
   })
 })
 
@@ -204,12 +198,10 @@ router.get('/deleteToCart', function(req, res, next) {
 
   if (!id) return res.json({err: -1, msg:'id是必填参数'})
 
-  jwt.verifyToken(req).then(user=>{
+  jwt.verifyToken(req, res).then(user=>{
     cartModel.deleteMany({_id: id}).then(()=>{
       res.json({err:0,msg:'删除成功'})
     })
-  }).catch(err=>{
-    res.json({err:1,msg:'fail',err})
   })
 })
 
@@ -225,7 +217,7 @@ router.post('/submitToCart', function(req, res, next) {
     if (!ele) goodIdArr.splice(idx,1)
   })
 
-  jwt.verifyToken(req).then(user=>{
+  jwt.verifyToken(req, res).then(user=>{
     let count = 0
     goodIdArr.map(ele=>{
       cartModel.deleteMany({_id: ele}).then(()=>{
@@ -236,9 +228,6 @@ router.post('/submitToCart', function(req, res, next) {
         }
       })
     })
-  }).catch(err=>{
-    console.log('token失败')
-    res.json({err:1,msg:'fail',err})
   })
 })
 

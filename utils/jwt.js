@@ -13,14 +13,18 @@ function generateToken(data) {
 }
 
 // 解密并验证token
-function verifyToken(req) {
+function verifyToken(req, res) {
   let token = req.headers.authorization
+  if (!token) {
+    return res.json({err:-1,msg:'token invalid'})
+  }
   return new Promise(function(resolve, reject) {
     try {
       let decoded = jwt.verify(token, 'geekxia')
       resolve(decoded.data)
     } catch(err) {
-      reject({err:-1,msg:'token invalid'})
+      // reject({err:-1,msg:'token invalid'})
+      res.json({err:-1,msg:'token invalid'})
     }
   })
 }
