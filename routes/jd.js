@@ -96,7 +96,12 @@ router.get('/getCateGoodList', function(req, res, next) {
   let params = {cate}
   if (!cate) delete params.cate
 
-  goodModel.find(params).limit(size).skip((page-1)*size).sort({rank: -1}).then(arr=>{
+  console.log(params)
+
+  // limit(size).skip((page-1)*size).sort({rank: -1})
+
+  goodModel.find({}).then(arr=>{
+    console.log(arr)
     res.json({err:0,msg:'success',data:arr})
   }).catch(err=>{
     res.json({err:1,msg:'fail',err})

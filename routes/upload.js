@@ -14,6 +14,7 @@ router.post('/img', function(req, res, next) {
     } else {
       // console.log('files',files.file[0])
       // var file = files.imgs[0]
+      console.log('files--------',files)
       var file = files.file[0]
       console.log('file', file)
       // 图片不能为空
