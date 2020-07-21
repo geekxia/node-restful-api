@@ -56,14 +56,19 @@ router.get('/getHotGoodList', function(req, res, next) {
   size = parseInt(size||10)
   cate = cate || ''
 
-  let params = {cate, hot}
+  let params = {cate}
   if (!cate) delete params.cate
 
-  goodModel.find(params).limit(size).skip((page-1)*size).sort({rank: -1}).then(arr=>{
-    res.json({err:0,msg:'success', data:arr})
-  }).catch(err=>{
-    res.json({err:1,msg:'fail',err})
-  }) 
+  goodModel.find().then(arr=>{
+    let total = arr.length
+    goodModel.find(params).limit(size).skip((page-1)*size).sort({create_time: -1}).then(list=>{
+      res.json({err:0,msg:'success', data: { list, total }})
+    }).catch(err=>{
+      res.json({err:1,msg:'fail',err})
+    }) 
+  })
+
+  
 })
 
 // 获取商品详情
