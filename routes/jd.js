@@ -59,7 +59,7 @@ router.get('/getHotGoodList', function(req, res, next) {
   let params = {cate}
   if (!cate) delete params.cate
 
-  goodModel.find().then(arr=>{
+  goodModel.find(params).then(arr=>{
     let total = arr.length
     goodModel.find(params).limit(size).skip((page-1)*size).sort({create_time: -1}).then(list=>{
       res.json({err:0,msg:'success', data: { list, total }})
