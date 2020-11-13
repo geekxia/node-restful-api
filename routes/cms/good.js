@@ -70,11 +70,12 @@ router.get('/detail', function(req, res){
 
 // 商品列表查询
 router.get('/list', function(req, res) {
-	var { size, page, cate, hot } = req.query
+	var { size, page, cate, hot, text } = req.query
 	// 用于查询
 	var params = {
 		cate: (cate || ''),
-		hot: (hot || false)
+		hot: (hot || false),
+		name: new RegExp(text || '', 'img')   // 商品名称搜索
 	}
 	if(!params.cate) delete params.cate
 	if(!params.hot) delete params.hot
@@ -86,7 +87,7 @@ router.get('/list', function(req, res) {
 	goodModel.find(params).count().then(total=>{
 		console.log('total', total)
 		// 查询当前页
-		goodModel.find(params).limit(size).skip(size*(page-1)).sort({rank: -1}).then(list=>{
+		goodModel.find(params).limit(size).skip(size*(page-1)).sort({create_time: -1}).then(list=>{
 			res.json({err:0, msg:'success', data: {total, list}})
 		})
 	})
