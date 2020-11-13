@@ -3,11 +3,20 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <style media="screen">
+      .user {
+        color: red;
+      }
+    </style>
   </head>
   <body>
-    <form action="/upload/img" method="POST" enctype="multipart/form-data">
-      <input type="file" name="imgs" value="">
-      <input type="submit" value="上传">
-    </form>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <hr>
+
+    <% for(var i=0; i<arr.length; i++) { %>
+      <h1 class="user"><%= arr[i].name %></h1>
+    <% } %>
+
   </body>
 </html>

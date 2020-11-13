@@ -1,5 +1,5 @@
 {
-  "name": "node-express-restful",
+  "name": "node-fullapi",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -12,8 +12,8 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.8.1",
+    "mongoose": "^5.10.6",
     "morgan": "~1.9.1",
-    "multiparty": "^4.2.1"
+    "multiparty": "^4.2.2"
   }
 }

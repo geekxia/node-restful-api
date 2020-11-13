@@ -1,32 +1,33 @@
-const jwt = require('jsonwebtoken')
-var userModel = require('../db/userModel')
+var jwt = require('jsonwebtoken')
 
-// 使用 HMAC SHA256 加密方式生成token
-function generateToken(data) {
-  // 对data进行加密
-  let token = jwt.sign({
-    data,
-    exp: Math.floor(Date.now()/1000) + 60*60*24*30,  // 有效期30天，单位是秒
-    iat: Date.now()
-  }, 'geekxia')
-  return token
+// jwt 是目前互联网领域最常用的一种用户鉴权方式
+
+// 生成token
+function createToken(data) {
+  return jwt.sign({
+    exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7), // 单位是秒
+    data,   // 就是我要在token加密的信息
+  }, 'qf')
 }
 
-// 解密并验证token
+// 验证token
 function verifyToken(req, res) {
-  let token = req.headers.authorization
-  if (!token) {
-    return res.json({err:-1,msg:'token invalid'})
-  }
   return new Promise(function(resolve, reject) {
     try {
-      let decoded = jwt.verify(token, 'geekxia')
-      resolve(decoded.data)
+      var token = req.headers.authorization
+      if(!token) {
+        return res.json({err: -1, msg: 'token 无效'})
+      } else {
+        var decoded = jwt.verify(token, 'qf')
+        resolve(decoded.data)
+      }
     } catch(err) {
-      // reject({err:-1,msg:'token invalid'})
-      res.json({err:-1,msg:'token invalid'})
+      reject(err)
     }
   })
 }
 
-module.exports = { generateToken, verifyToken }
+module.exports = {
+  createToken,
+  verifyToken
+}
