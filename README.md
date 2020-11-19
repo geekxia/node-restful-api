@@ -9,7 +9,7 @@ cd node-fullapi
 cnpm install
 npm start
 ```
-默认运行：http://localhost:3000
+默认运行：http://localhost:9000
 
 # MVC
 M   V   VM   前后端分离
