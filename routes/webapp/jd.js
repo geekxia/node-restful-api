@@ -14,53 +14,6 @@ router.get('/cates', function(req, res) {
 })
 
 
-// 商品新增、编辑
-// http://localhost:9000/api/v1/jd/good/update
-router.post('/good/update', function(req, res) {
-  // 接受入参
-  var { name,img,price,desc,rank,hot,cate, id } = req.body
-  // 必填字段校验
-  if(!name || !price || !desc || !cate) {
-    return res.json({err: 1, msg: '必填字段不完整'})
-  }
-
-  var good = {
-    name,    
-    price,
-    desc,
-    cate,
-    img: (img || ''),
-    // 非必填字段，给默认值
-    rank: (rank || 0),
-    hot: (hot || false)
-  }
-
-  // 有id是修改，无id是新增
-  if (id) {
-    goodModel.updateOne({_id: id}, {$set: good}).then(()=>{
-      res.json({err: 0, msg: 'success'})
-    })
-  } else {
-    // 当新增入库时，才需要create_time字段
-    good.create_time = Date.now()
-    goodModel.insertMany([good]).then(()=>{
-      // 响应客户端
-      res.json({err:0, msg:'success'})
-    })
-  }
-})
-
-// 商品删除
-router.get('/good/del', function(req, res) {
-  // GET取入参，使用 req.query
-  // POST取入参，使用 req.body
-  var { id } = req.query
-  console.log('id', id)
-  goodModel.deleteOne({_id: id}).then(()=>{
-    res.json({err: 0, msg: 'success'})
-  })
-})
-
 // 查询商品详情
 router.get('/good/detail', function(req, res){
   var { id } = req.query
@@ -105,7 +58,7 @@ router.post('/cart/add', function(req, res) {
   let { num, good_id } = req.body
 
   num = num || 1
-  if (!good_id) return res.json({err: -1, msg: 'good_id商品id是必填参数'})
+  if (!good_id) return res.json({err: 2, msg: 'good_id商品id是必填参数'})
 
   // 验证用户身份
   jwt.verifyToken(req, res).then(user=>{

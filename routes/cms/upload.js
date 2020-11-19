@@ -26,7 +26,6 @@ router.post('/img', function(req, res) {
 			})
 		}
 	})
-
   
 });
 

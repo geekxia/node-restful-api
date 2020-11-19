@@ -15,13 +15,20 @@ function verifyToken(req, res) {
   return new Promise(function(resolve, reject) {
     try {
       var token = req.headers.authorization
-      if(!token) {
+      if(token==='null') {
+        console.log('没有 token')
         return res.json({err: -1, msg: 'token 无效'})
       } else {
-        var decoded = jwt.verify(token, 'qf')
-        resolve(decoded.data)
+        console.log('有 token')
+        try {
+          var decoded = jwt.verify(token, 'qf')
+          resolve(decoded.data)
+        } catch(err) {
+          return res.json({err: -1, msg: 'token 无效'})
+        }      
       }
     } catch(err) {
+      return res.json({err: -1, msg: 'token 无效'})
       reject(err)
     }
   })
