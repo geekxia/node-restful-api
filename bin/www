@@ -12,7 +12,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '9000');
+var port = normalizePort(process.env.PORT || '9999');
 app.set('port', port);
 
 /**
@@ -26,7 +26,7 @@ var server = http.createServer(app);
  */
 
 server.listen(port, function() {
-  console.log('server is running on 9000')
+  console.log('server is running on '+port)
 });
 server.on('error', onError);
 server.on('listening', onListening);

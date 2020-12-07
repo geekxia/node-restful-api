@@ -6,5 +6,6 @@ module.exports = mongoose.model('ads', new mongoose.Schema({
   img: String,
   desc: String,
   title: String,
-  create_time: Number
+  create_time: Number,
+  status: Number
 }))
