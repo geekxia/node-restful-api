@@ -5,6 +5,7 @@ var fs = require('fs')
 
 
 /* 图片上传 */
+// 注意：要手动在 public 中创建 upload 目录
 router.post('/img', function(req, res) {
 
 	var form = new multiparty.Form()

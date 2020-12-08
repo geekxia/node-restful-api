@@ -54,9 +54,18 @@ router.get('/delete', function(req, res) {
 	// GET取入参，使用 req.query
 	// POST取入参，使用 req.body
 	var { id } = req.query
-	console.log('id', id)
-	goodModel.deleteOne({_id: id}).then(()=>{
-		res.json({err: 0, msg: 'success'})
+	console.log('------id', id, typeof(id))
+	idArr = id.split(';')
+	idArr = idArr.filter(ele=>ele)
+	let count = 0
+	console.log('======idArr', idArr)
+	idArr.map(ele=>{
+		goodModel.deleteOne({_id: ele}).then(()=>{
+			count++
+			if(count===idArr.length) {
+				res.json({err: 0, msg: 'success'})
+			}
+		})
 	})
 })
 
