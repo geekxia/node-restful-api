@@ -13,7 +13,8 @@ router.post('/img', function(req, res) {
 	form.parse(req, function(err, fields, files) {
 		if (err) {
 			res.json({err: 1, msg: 'img fail'})
-		} else {
+		}
+		 else if(files.file) {
 			var img = files.file[0]
 			console.log('img', img)
 			var read = fs.createReadStream(img.path)
@@ -25,6 +26,9 @@ router.post('/img', function(req, res) {
 			write.on('close', function(){
 				res.json({err:0,msg:'success', data: {url: writePath}})
 			})
+		}
+		else{
+			res.json({err: 1, msg: 'img fail'})
 		}
 	})
   
