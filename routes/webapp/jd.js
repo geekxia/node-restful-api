@@ -127,6 +127,8 @@ router.get('/cart/list', function(req, res, next) {
 router.post('/cart/update', function(req, res, next) {
   let { num, id } = req.body
 
+  console.log('--zxc', num, id)
+
   if (!num) return res.json({err:-1, msg:'num是必填参数'})
   if (num < 1) return res.json({err:-1, msg:'num不能小于1'})
   if (!id) return res.json({err:-1, msg:'id是必填参数'})

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-48bfb5bb"],{1061:function(n,t,e){"use strict";e.r(t);var c=function(){var n=this,t=n.$createElement;n._self._c;return n._m(0)},s=[function(){var n=this,t=n.$createElement,e=n._self._c||t;return e("div",{staticClass:"news"},[e("h1",[n._v("国外")])])}],u={},i=u,r=(e("673d"),e("2877")),a=Object(r["a"])(i,c,s,!1,null,"7ec4c14c",null);t["default"]=a.exports},6477:function(n,t,e){},"673d":function(n,t,e){"use strict";e("6477")}}]);
+//# sourceMappingURL=chunk-48bfb5bb.8f52a5b2.js.map
